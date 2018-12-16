@@ -24,7 +24,7 @@ public class FunSaleServiceImpl implements IFunSaleService {
      */
     @Override
     public FunSale findById(Integer saleID) {
-        return findById(saleID);
+        return funSaleDao.findById(saleID);
     }
     /**
      * 根saleID修改对对象

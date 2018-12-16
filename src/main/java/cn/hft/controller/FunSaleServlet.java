@@ -4,6 +4,7 @@ import cn.hft.entity.FunSale;
 import cn.hft.entity.Result;
 import cn.hft.service.IFunSaleService;
 import cn.hft.service.impl.FunSaleServiceImpl;
+import cn.hft.utils.InsertToXml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 
-@WebServlet("/funSaleServlet/*")
+@WebServlet("/funSale/*")
 public class FunSaleServlet extends BaseServlet {
    
 
@@ -28,6 +29,7 @@ public class FunSaleServlet extends BaseServlet {
     public void findBySaleId(HttpServletRequest request,HttpServletResponse response ) throws IOException {
         String saleId = request.getParameter("saleID");
         Integer saleIdInteger = Integer.parseInt(saleId);
+        System.out.println(saleIdInteger);
         FunSale funSale = funSaleService.findById(saleIdInteger);
         writeValue(funSale, response);
     }
@@ -117,4 +119,22 @@ public class FunSaleServlet extends BaseServlet {
         }
     }
 
+    public void createXml(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            InsertToXml insertToXml = new InsertToXml();
+            boolean flag = insertToXml.createXml();
+            if (flag) {
+                Result result = new Result(1, "生成xml文件成功，请查看D://centre.xml文件。");
+                writeValue(request,response);
+            } else {
+                Result result = new Result(0, "对不起生成xml文件失败。");
+                writeValue(request,response);
+            }
+        } catch (Exception e) {
+            Result result = new Result(0, "对不起生成xml文件失败。");
+            writeValue(request,response);
+            e.printStackTrace();
+        }
+
+    }
 }

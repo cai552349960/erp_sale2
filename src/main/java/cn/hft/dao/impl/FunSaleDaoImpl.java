@@ -15,7 +15,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
     @Override
     public List<FunSale> findAll() {
         List<Map<String, Object>> returnResultToList = null;
-        List<FunSale> list = null;
+        List<FunSale> list = new ArrayList<>();
         Connection connection = null;
         PreparedStatement pst = null;
         ResultSet resultSet = null;
@@ -33,6 +33,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         for (int i = 0; i < returnResultToList.size(); i++) {
             Map<String, Object> funSaleMap = returnResultToList.get(i);
             FunSale funSale = JSON.parseObject(JSON.toJSONString(funSaleMap), FunSale.class);
+            System.out.println(funSale);
             list.add(funSale);
         }
         return list;
@@ -70,7 +71,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "update [FUN_SALE] set  SALE_SUBJECT=? BUILD_NAME=? TRADE_ADDR=? SALE_ROOM=? SALE_INNERAREA=? REGION_NAME=? SECTION_NAME=? UPDATE_TIME=? SALE_TOTAL_PRICE=? SALE_UNIT_PRICE=? wherer SALE_ID=? ";
+            String sql = "update [FUN_SALE] set  SALE_SUBJECT=?,BUILD_NAME=?,TRADE_ADDR=?,SALE_ROOM=?,SALE_INNERAREA=?,REGION_NAME=?,SECTION_NAME=?,UPDATE_TIME=?,SALE_TOTAL_PRICE=?,SALE_UNIT_PRICE=? wherer SALE_ID=? ";
             pst = connection.prepareStatement(sql);
             pst.setString(1, funSale.getSaleSubject());
             pst.setString(2, funSale.getBuildName());
