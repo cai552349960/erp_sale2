@@ -3,6 +3,7 @@ package cn.hft.service.impl;
 import cn.hft.dao.IFunSaleDao;
 import cn.hft.dao.impl.FunSaleDaoImpl;
 import cn.hft.entity.FunSale;
+import cn.hft.entity.PageData;
 import cn.hft.service.IFunSaleService;
 
 import java.util.List;
@@ -14,8 +15,21 @@ public class FunSaleServiceImpl implements IFunSaleService {
      * @return
      */
     @Override
-    public List<FunSale> findAll() {
-        return funSaleDao.findAll();
+    public PageData<FunSale> findAll(Integer pageNum,Integer pageSize) {
+        Integer limitStart = (pageNum - 1) * pageSize + 1;
+        PageData<FunSale> pageData = new PageData<>();
+        pageData.setPageNum(pageNum);
+        pageData.setPageSize(pageSize);
+        Integer totalCount = funSaleDao.findTotalCount();
+        Integer totalPageNum = totalCount / pageSize;
+        if (totalCount % pageSize != 0) {
+            totalPageNum++;
+        }
+        pageData.setTotalCount(totalCount);
+        pageData.setTotalPageNum(totalPageNum);
+        List<FunSale> list = funSaleDao.findAll(limitStart, pageSize);
+        pageData.setFactory(list);
+        return pageData;
     }
     /**
      * 根据saleId查询结果

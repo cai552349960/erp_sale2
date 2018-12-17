@@ -12,8 +12,32 @@ import java.util.List;
 import java.util.Map;
 
 public class FunSaleDaoImpl implements IFunSaleDao {
+
     @Override
-    public List<FunSale> findAll() {
+    public Integer findTotalCount() {
+
+        Connection connection = null;
+        PreparedStatement pst = null;
+        ResultSet resultSet = null;
+        Integer totalCount = null;
+        try {
+            connection = JDBCUtils.getConnection();
+            String sql = "select count(1) totalCount from [FUN_SALE]";
+            pst = connection.prepareStatement(sql);
+            resultSet = pst.executeQuery();
+            while (resultSet.next()) {
+                totalCount = (Integer) resultSet.getObject("totalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.close(resultSet, pst, connection);
+        }
+        return totalCount;
+    }
+
+    @Override
+    public List<FunSale> findAll(Integer pageNum, Integer pageSize) {
         List<Map<String, Object>> returnResultToList = null;
         List<FunSale> list = new ArrayList<>();
         Connection connection = null;
@@ -21,19 +45,18 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "select SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME, SALE_TOTAL_PRICE, SALE_UNIT_PRICE from [FUN_SALE]";
+            String sql = "select top "+pageSize+" SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME, SALE_TOTAL_PRICE, SALE_UNIT_PRICE from [FUN_SALE] where SALE_ID not in (select top "+pageNum+" SALE_ID from [FUN_SALE] order by SALE_ID) order by UPDATE_TIME desc" ;
             pst = connection.prepareStatement(sql);
             resultSet = pst.executeQuery();
             returnResultToList = returnResultToList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             JDBCUtils.close(resultSet, pst, connection);
         }
         for (int i = 0; i < returnResultToList.size(); i++) {
             Map<String, Object> funSaleMap = returnResultToList.get(i);
             FunSale funSale = JSON.parseObject(JSON.toJSONString(funSaleMap), FunSale.class);
-            System.out.println(funSale);
             list.add(funSale);
         }
         return list;
@@ -47,7 +70,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "select SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME, SALE_TOTAL_PRICE, SALE_UNIT_PRICE from [FUN_SALE] where SALE_ID=?";
+            String sql = "select SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME, SALE_TOTAL_PRICE, SALE_UNIT_PRICE ,SHARE_FLAG from [FUN_SALE] where SALE_ID=?";
             pst = connection.prepareStatement(sql);
             pst.setInt(1, saleID);
             resultSet = pst.executeQuery();
@@ -77,7 +100,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setString(2, funSale.getBuildName());
             pst.setString(3, funSale.getTradeAddr());
             pst.setInt(4, funSale.getSaleRoom());
-            pst.setDouble(5, funSale.getSaleInnerarea());
+            pst.setBigDecimal(5, funSale.getSaleInnerarea());
             pst.setString(6, funSale.getRegionName());
             pst.setDate(7, (Date) funSale.getUpdateTime());
             pst.setBigDecimal(8, funSale.getSaleTotalPrice());
@@ -112,17 +135,17 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setInt(2, funSale.getCityID());
             pst.setInt(3, funSale.getDeptID());
             pst.setDate(4, (Date) funSale.getCreationTime());
-            pst.setString(5,  funSale.getSaleNo());
+            pst.setString(5, funSale.getSaleNo());
             pst.setInt(6, funSale.getSaleUseage());
             pst.setString(7, funSale.getSaleSubject());
-            pst.setDouble(8, funSale.getNumeric());
+            pst.setBigDecimal(8, funSale.getNumeric());
             pst.setInt(9, funSale.getSaleSource());
             pst.setInt(10, funSale.getSaleExplrth());
             pst.setString(11, funSale.getBuildName());
             pst.setString(12, funSale.getTradeAddr());
-            pst.setInt(13,funSale.getSaleRoom());
-            pst.setDouble(14, funSale.getSaleInnerarea());
-            pst.setString(15,funSale.getRegionName());
+            pst.setInt(13, funSale.getSaleRoom());
+            pst.setBigDecimal(14, funSale.getSaleInnerarea());
+            pst.setString(15, funSale.getRegionName());
             pst.setString(16, funSale.getSectionName());
             pst.setDate(17, (Date) funSale.getUpdateTime());
             pst.setBigDecimal(18, funSale.getSaleTotalPrice());
@@ -135,14 +158,13 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setBoolean(25, funSale.getShareFlag());
             pst.setBoolean(26, funSale.getRedFlag());
             pst.setBoolean(27, funSale.getFromPublic());
-            pst.setInt(28,funSale.getSaleIdOld());
+            pst.setInt(28, funSale.getSaleIdOld());
             pst.setBoolean(29, funSale.getHouseBargain());
             pst.setInt(30, funSale.getPanoramaMap());
             pst.setInt(31, funSale.getYouyouDeal());
             pst.setInt(32, funSale.getIsSaleLease());
             pst.setInt(33, funSale.getHouseSituation());
             pst.setInt(34, funSale.getOldTrueFlag());
-
 
 
             int i = pst.executeUpdate();

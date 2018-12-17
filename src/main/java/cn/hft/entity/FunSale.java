@@ -16,13 +16,13 @@ public class FunSale implements Serializable {
     private String saleNo;//系统编码
     private Integer saleUseage;//房屋用途
     private String saleSubject;//房源标题
-    private Double numeric;//建筑面积
+    private BigDecimal numeric;//建筑面积
     private Integer saleSource;//信息来源
     private Integer saleExplrth;//房勘，1=已勘0=未勘
     private String buildName;//楼盘名称
     private String tradeAddr;//商铺、厂房、车库、仓库：地址
     private Integer saleRoom;//几房/几室
-    private Double saleInnerarea;//套内面积
+    private BigDecimal saleInnerarea;//套内面积
     private String regionName;//行政区名称，区域名称
     private String sectionName;//片区名称，板块名称
     private Date updateTime;//最后更新时间
@@ -83,6 +83,22 @@ public class FunSale implements Serializable {
                 ", houseSituation=" + houseSituation +
                 ", oldTrueFlag=" + oldTrueFlag +
                 '}';
+    }
+
+    public BigDecimal getNumeric() {
+        return numeric;
+    }
+
+    public void setNumeric(BigDecimal numeric) {
+        this.numeric = numeric;
+    }
+
+    public BigDecimal getSaleInnerarea() {
+        return saleInnerarea;
+    }
+
+    public void setSaleInnerarea(BigDecimal saleInnerarea) {
+        this.saleInnerarea = saleInnerarea;
     }
 
     public Integer getSaleID() {
@@ -149,13 +165,7 @@ public class FunSale implements Serializable {
         this.saleSubject = saleSubject;
     }
 
-    public Double getNumeric() {
-        return numeric;
-    }
 
-    public void setNumeric(Double numeric) {
-        this.numeric = numeric;
-    }
 
     public Integer getSaleSource() {
         return saleSource;
@@ -197,13 +207,6 @@ public class FunSale implements Serializable {
         this.saleRoom = saleRoom;
     }
 
-    public Double getSaleInnerarea() {
-        return saleInnerarea;
-    }
-
-    public void setSaleInnerarea(Double saleInnerarea) {
-        this.saleInnerarea = saleInnerarea;
-    }
 
     public String getRegionName() {
         return regionName;

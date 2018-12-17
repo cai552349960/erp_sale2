@@ -1,6 +1,7 @@
 package cn.hft.controller;
 
 import cn.hft.entity.FunSale;
+import cn.hft.entity.PageData;
 import cn.hft.entity.Result;
 import cn.hft.service.IFunSaleService;
 import cn.hft.service.impl.FunSaleServiceImpl;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.List;
 
 @WebServlet("/funSale/*")
 public class FunSaleServlet extends BaseServlet {
@@ -22,8 +22,16 @@ public class FunSaleServlet extends BaseServlet {
     private IFunSaleService funSaleService = new FunSaleServiceImpl();
 
     public void findAll(HttpServletRequest request,HttpServletResponse response ) throws IOException {
-        List<FunSale> funSales = funSaleService.findAll();
-        writeValue(funSales, response);
+        Integer pageNum = Integer.parseInt(request.getParameter("pageNum"));
+        Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        if (pageNum == null || pageNum == 0) {
+            pageNum = 1;
+        }
+        if (pageSize == null || pageSize == 0) {
+            pageSize = 20;
+        }
+        PageData<FunSale> pageData = funSaleService.findAll(pageNum, pageSize);
+        writeValue(pageData, response);
     }
 
     public void findBySaleId(HttpServletRequest request,HttpServletResponse response ) throws IOException {
@@ -120,19 +128,27 @@ public class FunSaleServlet extends BaseServlet {
     }
 
     public void createXml(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Integer pageNum = Integer.parseInt(request.getParameter("pageNum"));
+        Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        if (pageNum == null || pageNum == 0) {
+            pageNum = 1;
+        }
+        if (pageSize == null || pageSize == 0) {
+            pageSize = 20;
+        }
         try {
             InsertToXml insertToXml = new InsertToXml();
-            boolean flag = insertToXml.createXml();
+            boolean flag = insertToXml.createXml(pageNum,pageSize);
             if (flag) {
                 Result result = new Result(1, "生成xml文件成功，请查看D://centre.xml文件。");
-                writeValue(request,response);
+                writeValue(result,response);
             } else {
                 Result result = new Result(0, "对不起生成xml文件失败。");
                 writeValue(request,response);
             }
         } catch (Exception e) {
             Result result = new Result(0, "对不起生成xml文件失败。");
-            writeValue(request,response);
+            writeValue(result,response);
             e.printStackTrace();
         }
 

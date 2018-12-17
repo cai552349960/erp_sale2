@@ -5,11 +5,12 @@ import cn.hft.entity.FunSale;
 import java.util.List;
 
 public interface IFunSaleDao {
+    public Integer findTotalCount();
     /**
      * 查询所有列表
      * @return
      */
-    public List<FunSale> findAll();
+    public List<FunSale> findAll(Integer pageNum,Integer pageSize);
 
     /**
      * 根据saleId查询结果

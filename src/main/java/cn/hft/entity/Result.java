@@ -17,7 +17,7 @@ public class Result implements Serializable {
                 '}';
     }
 
-    public Result(Integer codeTape, String messager) {
+    public Result (Integer codeTape, String messager) {
         this.codeTape = codeTape;
         this.messager = messager;
     }

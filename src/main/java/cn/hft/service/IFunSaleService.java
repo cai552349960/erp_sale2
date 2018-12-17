@@ -1,8 +1,8 @@
 package cn.hft.service;
 
 import cn.hft.entity.FunSale;
+import cn.hft.entity.PageData;
 
-import java.util.List;
 
 public interface IFunSaleService {
     /**
@@ -10,7 +10,7 @@ public interface IFunSaleService {
      *
      * @return
      */
-    public List<FunSale> findAll();
+    public PageData<FunSale> findAll(Integer pageNum, Integer pageSize);
 
     /**
      * 根据saleId查询结果
