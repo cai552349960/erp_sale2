@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/funSale/*")
 public class FunSaleServlet extends BaseServlet {
@@ -77,19 +79,22 @@ public class FunSaleServlet extends BaseServlet {
     public void insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Result result = null;
         BufferedReader br = request.getReader();
+
 try {
         String str, wholeStr = "";
         while((str = br.readLine()) != null){
             wholeStr += str;
         }
+    String[] split = wholeStr.split("&");
+    Map<String, Object> map = new HashMap<>();
+    for (int i = 0; i < split.length; i++) {
+        String[] split1 = split[i].split("=");
+        map.put(split1[0], split1[1]);
+    }
+    FunSale funSale = new FunSale();
+//    funSale.setCreationTime();
 
-    String replace ="{"+ replace1+"}";
 
-        System.out.println(replace);
-
-
-            ObjectMapper mapper = new ObjectMapper();
-            FunSale funSale = mapper.readValue(replace, FunSale.class);
             System.out.println(funSale);
             Boolean flag = funSaleService.insert(funSale);
             if (flag) {
