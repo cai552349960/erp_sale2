@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,17 +49,17 @@ public class FunSaleServlet extends BaseServlet {
     public void updateByFunSale( HttpServletRequest request,HttpServletResponse response) throws IOException {
         Result result = null;
         try {
-            Enumeration<String> enu = request.getParameterNames();
-            StringBuffer json = new StringBuffer("{");
-            while (enu.hasMoreElements()) {
-                String paraName = (String) enu.nextElement();
-                String parameterValue = request.getParameter(paraName);
-                json.append("\"").append(paraName).append("\"").append(":").append("\"").append(parameterValue).append("\"").append(",");
+            BufferedReader br = request.getReader();
+            String str, wholeStr = "";
+            while((str = br.readLine()) != null){
+                wholeStr += str;
             }
-            String substring = json.substring(0, json.length());
-            substring = substring + "}";
+            System.out.println(wholeStr);
+
             ObjectMapper mapper = new ObjectMapper();
-            FunSale funSale = mapper.readValue(substring, FunSale.class);
+            FunSale funSale = mapper.readValue(wholeStr, FunSale.class);
+            funSale.setUpdateTime(new Timestamp(new Date().getTime()));
+            System.out.println(funSale);
             Boolean flag = funSaleService.updateByFunSale(funSale);
             if (flag) {
                 result = new Result(111, "修改成功");
@@ -85,13 +87,12 @@ try {
         while((str = br.readLine()) != null){
             wholeStr += str;
         }
-    String[] split = wholeStr.split("&");
-    Map<String, Object> map = new HashMap<>();
-    for (int i = 0; i < split.length; i++) {
-        String[] split1 = split[i].split("=");
-        map.put(split1[0], split1[1]);
-    }
-    FunSale funSale = new FunSale();
+    System.out.println(wholeStr);
+    ObjectMapper mapper = new ObjectMapper();
+    FunSale funSale = mapper.readValue(wholeStr, FunSale.class);
+    funSale.setCreationTime(new Timestamp(new Date().getTime()));
+    funSale.setUpdateTime(new Timestamp(new Date().getTime()));
+
 //    funSale.setCreationTime();
 
 

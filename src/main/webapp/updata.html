@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/jquery-3.3.1.js"></script>
+    <title>修改</title>
+    <script>
+        $(function () {
+
+            var saleId =new Request().getParameter("saleId");
+            $('#sale').val(saleId);
+        });
+
+        function HashMap(key,value){
+            var key;
+            var value;
+            this.put = function(key,value){
+                this.key = key;
+                this.value = value;
+            }
+            this.getKey = function(){
+                return key;
+            }
+            this.getValue = function(){
+                return value;
+            }
+        }
+
+        //构建简单对象
+        function Request(){
+            var parameters = null;
+            this.init = function () {
+                var location = window.location.href;
+                var index = location.indexOf("?");
+                var queryString = ((index > 0) ? location.substring(index + 1) : null);
+                if (null != queryString) {
+                    parameters = new Array();
+                    var parameterArray = queryString.split("&");
+                    var length = parameterArray.length;
+                    for (var i = 0; i < length; i++) {
+                        var parameter = parameterArray[i];
+                        index = parameter.indexOf("=");
+                        var key = parameter.substring(0, index);
+                        var value = parameter.substring(index + 1);
+                        if (null != key && key.length > 0) {
+                            parameters.push(new HashMap(key, value));
+                        }
+                    }
+                }
+            };
+
+            this.getParameter = function(key){
+                this.init();
+                if(null==parameters)
+                    return "";
+                var length = parameters.length;
+                for(var i=0;i<length;i++){
+                    hashMap = parameters[i];
+                    if(hashMap.getKey() == key){
+                        return hashMap.getValue();
+                    }
+                }
+                return "";
+            }
+
+            this.getParameterValues = function(key){
+                this.init();
+                if(null==parameters)
+                    return null;
+                var array = new Array();
+                var length = parameters.length;
+                for(var i=0;i<length;i++){
+                    hashMap = parameters[i];
+                    if(hashMap.getKey() == key){
+                        array.push(hashMap.getValue());
+                    }
+                }
+                return array;
+            }
+        }
+
+        function commit() {
+            /*var data = getUser();
+            alert(data);*/
+            var data = $('#form1').serializeObject();
+            data = JSON.stringify(data);
+           $.ajax({
+               type: "post",//方法类型
+               contentType: 'application/json;charset=UTF-8',
+               dataType: "json",//预期服务器返回的数据类型
+               url: "funSale/updateByFunSale" ,//url
+               data:data,
+               success:function (data) {
+                   alert(data.messager);
+               }
+           });
+       }
+        /*function getUser(){
+            console.log($('#form1').serializeJSON());
+            console.log(JSON.stringify($('#formDemo').serializeJSON()));
+            return JSON.stringify($('#formDemo').serializeJSON());
+        }*/
+        $.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+
+    </script>
+</head>
+<body>
+<form id="form1" onsubmit="return false" action="##" method="post" >
+
+    房源ID:
+    <input name="saleID" type="text" id="sale" readonly/><br>
+    房源标题:
+    <input name="saleSubject" type="text"/><br>
+    楼盘名称:
+    <input name="buildName" type="text"/><br>
+    地址:
+    <input name="tradeAddr" type="text"/><br>
+    房/室:
+    <input name="saleRoom" type="text"/><br>
+    套内面积:
+    <input name="saleInnerarea" type="text"/><br>
+    区域名称:
+    <input name="regionName" type="text"/><br>
+    片区名称:
+    <input name="sectionName" type="text"/><br>
+    <!--最后更新时间:
+    <input name="updateTime" type="text"/><br>-->
+    售价:
+    <input name="saleTotalPrice" type="text"/><br>
+    单价:
+    <input name="saleUnitPrice" type="text"/><br>
+    <input type="button" name="button" value="提交修改" onclick="commit()">
+
+</form>
+
+<a href="http://localhost:8083">返回首页</a>
+</body>
+</html>

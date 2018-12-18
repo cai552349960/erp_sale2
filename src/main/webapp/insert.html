@@ -6,20 +6,36 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script>
         function add() {
-            var json = $('#form1').serialize();
-            alert(json);
+            var data = $('#form1').serializeObject();
+            data = JSON.stringify(data);
             $.ajax({
                 //几个参数需要注意一下
                 type: "post",//方法类型
                 contentType: 'application/json;charset=UTF-8',
                 dataType: "json",//预期服务器返回的数据类型
                 url: "funSale/insert",//url
-                data:JSON.stringify( $('#form1').serialize()),
+                data:data,
                 success: function (data) {
                     alert(data.massager);
                 }
             });
         }
+        $.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
     </script>
 </head>
 <body>
@@ -101,6 +117,6 @@
     <input name="oldTrueFlag" type="text"/><br>
     <input type="button" value="新增" onclick="add()">
 </form>
-<a href="http://localhost:9007">返回首页</a>
+<a href="http://localhost:8083">返回首页</a>
 </body>
 </html>

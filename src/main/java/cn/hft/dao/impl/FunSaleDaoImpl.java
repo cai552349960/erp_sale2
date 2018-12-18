@@ -95,7 +95,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "update [FUN_SALE] set  SALE_SUBJECT=?,BUILD_NAME=?,TRADE_ADDR=?,SALE_ROOM=?,SALE_INNERAREA=?,REGION_NAME=?,SECTION_NAME=?,UPDATE_TIME=?,SALE_TOTAL_PRICE=?,SALE_UNIT_PRICE=? wherer SALE_ID=? ";
+            String sql = "update [FUN_SALE] set  SALE_SUBJECT=?,BUILD_NAME=?,TRADE_ADDR=?,SALE_ROOM=?,SALE_INNERAREA=?,REGION_NAME=?,SECTION_NAME=?,UPDATE_TIME=?,SALE_TOTAL_PRICE=?,SALE_UNIT_PRICE=? where SALE_ID=? ";
             pst = connection.prepareStatement(sql);
             pst.setString(1, funSale.getSaleSubject());
             pst.setString(2, funSale.getBuildName());
@@ -103,9 +103,11 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setInt(4, funSale.getSaleRoom());
             pst.setBigDecimal(5, funSale.getSaleInnerarea());
             pst.setString(6, funSale.getRegionName());
-            pst.setDate(7, (Date) funSale.getUpdateTime());
-            pst.setBigDecimal(8, funSale.getSaleTotalPrice());
-            pst.setBigDecimal(9, funSale.getSaleUnitPrice());
+            pst.setString(7, funSale.getSectionName());
+            pst.setTimestamp(8, (Timestamp) funSale.getUpdateTime());
+            pst.setBigDecimal(9, funSale.getSaleTotalPrice());
+            pst.setBigDecimal(10, funSale.getSaleUnitPrice());
+            pst.setInt(11,funSale.getSaleID());
             int i = pst.executeUpdate();
             if (i == 0) {
                 flag = false;
@@ -133,12 +135,13 @@ public class FunSaleDaoImpl implements IFunSaleDao {
                     ",NUMERIC,SALE_SOURCE,SALE_EXPLRTH,BUILD_NAME,TRADE_ADDR,SALE_ROOM,SALE_INNERAREA,REGION_NAME,SECTION_NAME," +
                     "UPDATE_TIME,SALE_TOTAL_PRICE,SALE_UNIT_PRICE,SALE_CONSIGN,SALE_MAP,PLATE_TYPE,SALE_STATUS,INFO_TYPE,SHARE_FLAG," +
                     "RED_FLAG,FROM_PUBLIC,SALE_ID_OLD,HOUSE_BARGAIN,PANORAMA_MAP,YOUYOU_DEAL,IS_SALE_LEASE,HOUSE_SITUATION,OLD_TRUE_FLAG)" +
-                    " VALUES("+"NEXT VALUE  FOR SEQ_FUN_SALE__SALE_ID,"+"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+                    " VALUES(NEXT VALUE  FOR SEQ_FUN_SALE__SALE_ID,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+            System.out.println(sql);
             pst = connection.prepareStatement(sql);
             pst.setInt(1, funSale.getCompID());
             pst.setInt(2, funSale.getCityID());
             pst.setInt(3, funSale.getDeptID());
-            pst.setDate(4, (Date) funSale.getCreationTime());
+            pst.setTimestamp(4, (Timestamp) funSale.getCreationTime());
             pst.setString(5, funSale.getSaleNo());
             pst.setInt(6, funSale.getSaleUseage());
             pst.setString(7, funSale.getSaleSubject());
@@ -151,7 +154,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setBigDecimal(14, funSale.getSaleInnerarea());
             pst.setString(15, funSale.getRegionName());
             pst.setString(16, funSale.getSectionName());
-            pst.setDate(17, (Date) funSale.getUpdateTime());
+            pst.setTimestamp(17, (Timestamp) funSale.getUpdateTime());
             pst.setBigDecimal(18, funSale.getSaleTotalPrice());
             pst.setBigDecimal(19, funSale.getSaleUnitPrice());
             pst.setInt(20, funSale.getSaleConsign());
