@@ -52,10 +52,22 @@
     }
 
     function deletel(saleId) {
-        $.get("funSale/deleteById", {saleID: saleId}, function (data) {
-            alert(data.messager);
-            location.replace(document.referrer);
-        })
+        var ss = "saleId=" + saleId;
+        $.ajax({
+            //几个参数需要注意一下
+            type: "get",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/funSale/deleteById",//url
+            data: ss,
+            success: function (data) {
+                /*  $.get("funSale/deleteById", {saleID: saleId}, function (data) {*/
+                alert(data.messager);
+                location.replace(document.referrer);
+            },
+            error: function () {
+                alert("异常！");
+            }
+        });
     }
 
     function findById() {
