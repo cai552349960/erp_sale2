@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增</title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <script>
+        function add() {
+            var json = $('#form1').serialize();
+            alert(json);
+            $.ajax({
+                //几个参数需要注意一下
+                type: "post",//方法类型
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",//预期服务器返回的数据类型
+                url: "funSale/insert",//url
+                data:JSON.stringify( $('#form1').serialize()),
+                success: function (data) {
+                    alert(data.massager);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<form id="form1" onsubmit="return false" action="##" method="post" >
+
+
+    公司ID:
+    <input name="compID" type="text"/><br>
+    城市ID:
+    <input name="cityID" type="text"/><br>
+    分店ID:
+    <input name="deptID" type="text"/><br>
+    登记时间:
+    <input id="creationTime" type="time"/><br>
+    系统编码:
+    <input name="saleNo" type="text"/><br>
+    房屋用途:
+    <input name="saleUseage" type="text"/><br>
+    房源标题:
+    <input name="saleSubject" type="text"/><br>
+    建筑面积:
+    <input name="numeric" type="text"/><br>
+    信息来源:
+    <input name="saleSource" type="text"/><br>
+    房勘:
+    <input name="saleExplrth" type="text"/><br>
+    楼盘名称:
+    <input name="buildName" type="text"/><br>
+    地址:
+    <input name="tradeAddr" type="text"/><br>
+    房/室:
+    <input name="saleRoom" type="text"/><br>
+    套内面积:
+    <input name="saleInnerarea" type="text"/><br>
+    区域名称:
+    <input name="regionName" type="text"/><br>
+    片区名称:
+    <input name="sectionName" type="text"/><br>
+    最后更新时间:
+    <input id="updateTime" type="time"/><br>
+    售价:
+    <input name="saleTotalPrice" type="text"/><br>
+    单价:
+    <input name="saleUnitPrice" type="text"/><br>
+    委托:
+    <input name="saleConsign" type="text"/><br>
+    图片张数:
+    <input name="saleMap" type="text"/><br>
+    盘别:
+    <input name="plateType" type="text"/><br>
+    房屋状态:
+    <input name="saleStatus" type="text"/><br>
+    房源类型:
+    <input name="infoType" type="text"/><br>
+    精英版登记:
+    <input type="radio" name="shareFlag" value="true" /> 是
+    <input type="radio" name="shareFlag" value="false" /> 否<br>
+    红色警示:
+    <input type="radio" name="redFlag" value="true" />是
+    <input type="radio" name="redFlag" value="false" />否<br>
+    是否转自抢盘:
+    <input type="radio" name="fromPublic" value="true" />是
+    <input type="radio" name="fromPublic" value="false" />否<br>
+    老版SALE_ID:
+    <input name="saleIdOld" type="text"/><br>
+    0:未议价1:已议价:
+    <input type="radio" name="houseBargain" value="true" />是
+    <input type="radio" name="houseBargain" value="false" />否<br>
+    720相机图片有多少张:
+    <input name="panoramaMap" type="text"/><br>
+    优优排除成交:
+    <input name="youyouDeal" type="text"/><br>
+    是否是租售房源:
+    <input name="isSaleLease" type="text"/><br>
+
+    房屋现状:
+    <input name="houseSituation" type="text"/><br>
+    老的真房源标签:
+    <input name="oldTrueFlag" type="text"/><br>
+    <input type="button" value="新增" onclick="add()">
+</form>
+<a href="http://localhost:9007">返回首页</a>
+</body>
+</html>

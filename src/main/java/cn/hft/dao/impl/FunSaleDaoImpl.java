@@ -45,7 +45,8 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "select top "+pageSize+" SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME, SALE_TOTAL_PRICE, SALE_UNIT_PRICE from [FUN_SALE] where SALE_ID not in (select top "+pageNum+" SALE_ID from [FUN_SALE] order by SALE_ID) order by UPDATE_TIME desc" ;
+            String sql = "select top "+pageSize+" SALE_ID, SALE_SUBJECT ,BUILD_NAME, TRADE_ADDR, SALE_ROOM, SALE_INNERAREA, REGION_NAME, SECTION_NAME, UPDATE_TIME," +
+                    " SALE_TOTAL_PRICE, SALE_UNIT_PRICE from [FUN_SALE] where SALE_ID not in (select top "+pageNum+" SALE_ID from [FUN_SALE] order by SALE_ID) order by UPDATE_TIME desc" ;
             pst = connection.prepareStatement(sql);
             resultSet = pst.executeQuery();
             returnResultToList = returnResultToList(resultSet);
@@ -128,8 +129,11 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         ResultSet resultSet = null;
         try {
             connection = JDBCUtils.getConnection();
-            String sql = "insert into [FUN_SALE](COMP_ID,CITY_ID,DEPT_ID,CREATION_TIME,SALE_NO,SALE_USEAGE,SALE_SUBJECT,NUMERIC,SALE_SOURCE,SALE_EXPLRTH,BUILD_NAME,TRADE_ADDR,SALE_ROOM,SALE_INNERAREA,REGION_NAME,SECTION_NAME,UPDATE_TIME,SALE_TOTAL_PRICE,SALE_UNIT_PRICE," +
-                    "SALE_CONSIGN,SALE_MAP,PLATE_TYPE,SALE_STATUS,INFO_TYPE,SHARE_FLAG,RED_FLAG,FROM_PUBLIC,SALE_ID_OLD,HOUSE_BARGAIN,PANORAMA_MAP,YOUYOU_DEAL,IS_SALE_LEASE,HOUSE_SITUATION,OLD_TRUE_FLAG) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+            String sql = "insert into [FUN_SALE](SALE_ID,COMP_ID,CITY_ID,DEPT_ID,CREATION_TIME,SALE_NO,SALE_USEAGE,SALE_SUBJECT" +
+                    ",NUMERIC,SALE_SOURCE,SALE_EXPLRTH,BUILD_NAME,TRADE_ADDR,SALE_ROOM,SALE_INNERAREA,REGION_NAME,SECTION_NAME," +
+                    "UPDATE_TIME,SALE_TOTAL_PRICE,SALE_UNIT_PRICE,SALE_CONSIGN,SALE_MAP,PLATE_TYPE,SALE_STATUS,INFO_TYPE,SHARE_FLAG," +
+                    "RED_FLAG,FROM_PUBLIC,SALE_ID_OLD,HOUSE_BARGAIN,PANORAMA_MAP,YOUYOU_DEAL,IS_SALE_LEASE,HOUSE_SITUATION,OLD_TRUE_FLAG)" +
+                    " VALUES("+"NEXT VALUE  FOR SEQ_FUN_SALE__SALE_ID,"+"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
             pst = connection.prepareStatement(sql);
             pst.setInt(1, funSale.getCompID());
             pst.setInt(2, funSale.getCityID());

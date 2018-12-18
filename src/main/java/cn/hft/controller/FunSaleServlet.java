@@ -9,9 +9,9 @@ import cn.hft.utils.InsertToXml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -76,18 +76,21 @@ public class FunSaleServlet extends BaseServlet {
 
     public void insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Result result = null;
-        try {
-            Enumeration<String> enu = request.getParameterNames();
-            StringBuffer json = new StringBuffer("{");
-            while (enu.hasMoreElements()) {
-                String paraName = (String) enu.nextElement();
-                String parameterValue = request.getParameter(paraName);
-                json.append("\"").append(paraName).append("\"").append(":").append("\"").append(parameterValue).append("\"").append(",");
-            }
-            String substring = json.substring(0, json.length());
-            substring = substring + "}";
+        BufferedReader br = request.getReader();
+try {
+        String str, wholeStr = "";
+        while((str = br.readLine()) != null){
+            wholeStr += str;
+        }
+
+    String replace ="{"+ replace1+"}";
+
+        System.out.println(replace);
+
+
             ObjectMapper mapper = new ObjectMapper();
-            FunSale funSale = mapper.readValue(substring, FunSale.class);
+            FunSale funSale = mapper.readValue(replace, FunSale.class);
+            System.out.println(funSale);
             Boolean flag = funSaleService.insert(funSale);
             if (flag) {
 
