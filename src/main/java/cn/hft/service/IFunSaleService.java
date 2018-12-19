@@ -6,6 +6,11 @@ import cn.hft.entity.PageData;
 
 public interface IFunSaleService {
     /**
+     *
+     * @return 总记录数
+     */
+    public Integer findTotalCount();
+    /**
      * 查询所有列表
      *
      * @return

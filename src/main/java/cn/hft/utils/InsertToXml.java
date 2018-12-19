@@ -12,6 +12,7 @@ import java.util.Set;
 
 
 import cn.hft.entity.FunSale;
+import cn.hft.service.IFunSaleService;
 import cn.hft.service.impl.FunSaleServiceImpl;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -22,6 +23,7 @@ import org.dom4j.io.XMLWriter;
 
 //把从数据库中读到的数据，生成xml文件
 public class InsertToXml implements Serializable {
+    private IFunSaleService funSaleService = new FunSaleServiceImpl();
     private Set<Integer> hset=null;
     /**
      * @athor centre
@@ -33,10 +35,8 @@ public class InsertToXml implements Serializable {
         Document doc=DocumentHelper.createDocument();//创建document
         Element schoolEle=doc.addElement("funSale");//添加根元素
         schoolEle.addComment("文档的根funSale已经创建。");//添加注释
-        List<FunSale> al=new FunSaleServiceImpl().findAll(pageNum,pageSize).getFactory();
-        for (FunSale funSale : al) {
-            System.out.println(funSale);
-        }
+        List<FunSale> al=funSaleService.findAll(pageNum,pageSize).getFactory();
+
         for (int i = 0; i < al.size(); i++) {
             FunSale funSale=al.get(i);
             hset.add(funSale.getSaleID());
@@ -45,7 +45,6 @@ public class InsertToXml implements Serializable {
             Integer saleId=it.next();
             Element classEle=schoolEle.addElement("saleId");
             classEle.addAttribute("saleId", saleId+"");
-            System.out.println(saleId);
             for (int i = 0; i < al.size(); i++) {
                 FunSale funSale=al.get(i);
                 if (saleId == funSale.getSaleID()) {
@@ -67,7 +66,6 @@ public class InsertToXml implements Serializable {
                         funSale.setSaleUnitPrice(new BigDecimal(0));
                     }
                     UserEle.addElement("saleUnitPrice").addText(funSale.getSaleUnitPrice().toString());
-                    System.out.println(i);
                 }
             }
         }
@@ -85,7 +83,7 @@ public class InsertToXml implements Serializable {
    /*创建缩进格式的OutputFormat
    format = OutputFormat.createCompactFormat();
    */
-            File file = new File("D://centre.xml");
+            File file = new File("F:\\IdeaProjects\\erp_sale2\\src\\main\\webapp\\funSaleAll.xml");
             if (file.exists()) {
                 file.createNewFile();
             }

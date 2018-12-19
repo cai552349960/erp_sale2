@@ -10,6 +10,12 @@ import java.util.List;
 
 public class FunSaleServiceImpl implements IFunSaleService {
     IFunSaleDao funSaleDao = new FunSaleDaoImpl();
+
+    @Override
+    public Integer findTotalCount() {
+        return funSaleDao.findTotalCount();
+    }
+
     /**
      * 查询所有列表
      * @return

@@ -13,6 +13,14 @@
     $(function () {
         findALL();
     });
+    function datetimeFormat_2(longTypeDate){
+        var datetimeType = "";
+        var date = new Date();
+        date.setTime(longTypeDate);
+        datetimeType = date.getFullYear()+"-"+date.getMonth()+"-"+date.getDay()+"&nbsp;"+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();//yyyy-MM-dd 00:00:00格式日期
+        return datetimeType;
+    }
+
 
     function findALL() {
         $.get("funSale/findAll", {pageNum: pageNum, pageSize: 20}, function (data) {
@@ -38,7 +46,7 @@
                 var funSale = data.factory[i];
                 var strl;
                 strl = '<tr><td>' + funSale.saleID + '</td><td>' + funSale.saleSubject + '</td><td>' + funSale.buildName + '</td><td>' + funSale.tradeAddr + '</td><td>' + funSale.saleRoom + '</td><td>'
-                    + funSale.saleInnerarea + '</td><td>' + funSale.regionName + '</td><td>' + funSale.sectionName + '</td><td>' + funSale.updateTime + '</td><td>' + funSale.saleTotalPrice + '</td><td>'
+                    + funSale.saleInnerarea + '</td><td>' + funSale.regionName + '</td><td>' + funSale.sectionName + '</td><td>' + datetimeFormat_2(funSale.updateTime) + '</td><td>' + funSale.saleTotalPrice + '</td><td>'
                     + funSale.saleUnitPrice + '</td><td><button value="' + funSale.saleID + '" onclick="deletel(' + funSale.saleID + ')">删除</button></td><td><button value="' + funSale.saleID + '" onclick="update(' + funSale.saleID + ')">修改</button></td></tr>';
                 str += strl;
             }
@@ -62,7 +70,8 @@
             success: function (data) {
                 /*  $.get("funSale/deleteById", {saleID: saleId}, function (data) {*/
                 alert(data.messager);
-                location.replace(document.referrer);
+               // location.replace(document.referrer);
+                findALL();
             },
             error: function () {
                 alert("异常！");
@@ -75,7 +84,7 @@
             //几个参数需要注意一下
             type: "get",//方法类型
             dataType: "json",//预期服务器返回的数据类型
-            url: "/funSale/findById.do",//url
+            url: "funSale/findBySaleId",//url
             data: $('#form1').serialize(),
             success: function (data) {
                 console.log(data);//打印服务端返回的数据(调试用)
@@ -95,7 +104,7 @@
                     '        <td>修改</td>\n' +
                     '    </tr>';
                 var strl = '<tr><td>' + data.saleID + '</td><td>' + data.saleSubject + '</td><td>' + data.buildName + '</td><td>' + data.tradeAddr + '</td><td>' + data.saleRoom + '</td><td>'
-                    + data.saleInnerarea + '</td><td>' + data.regionName + '</td><td>' + data.sectionName + '</td><td>' + data.updateTime + '</td><td>' + data.saleTotalPrice + '</td><td>'
+                    + data.saleInnerarea + '</td><td>' + data.regionName + '</td><td>' + data.sectionName + '</td><td>' + datetimeFormat_2(funSale.updateTime) + '</td><td>' + data.saleTotalPrice + '</td><td>'
                     + data.saleUnitPrice + '</td><td><button value="' + funSale.saleID + '" onclick="deletel(' + funSale.saleID + ')">删除</button></td><td><button name="saleId" value="' + data.saleID + '" onclick="update(' + data.saleID + ')">修改</button></td></tr>';
                 str += strl;
                 $("#funSale").html(str);
@@ -112,7 +121,7 @@
 
     function creatXml(page, size) {
         $.get("funSale/createXml", {pageNum: pageNum, pageSize: 20}, function (data) {
-            alert(data.messager);
+            // alert(data.messager);
         });
     }
     
@@ -176,7 +185,8 @@
         <tr></tr>
         <tr></tr>
         <tr></tr>
-        <button onclick="creatXml()">导出本页</button>
+        <!--<button onclick="creatXml()">导出本页</button>-->
+        <a href="funSale/createXml">导出房源出售xml文档</a>
         <tr></tr>
 
         <table border="1px" cellspacing="0" cellpadding="0" style="float: right;">

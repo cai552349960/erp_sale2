@@ -5,6 +5,10 @@ import cn.hft.entity.FunSale;
 import java.util.List;
 
 public interface IFunSaleDao {
+    /**
+     *
+     * @return 总记录数
+     */
     public Integer findTotalCount();
     /**
      * 查询所有列表

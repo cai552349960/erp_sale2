@@ -8,11 +8,12 @@ import cn.hft.service.impl.FunSaleServiceImpl;
 import cn.hft.utils.InsertToXml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Enumeration;
@@ -21,13 +22,27 @@ import java.util.Map;
 
 @WebServlet("/funSale/*")
 public class FunSaleServlet extends BaseServlet {
+    private static boolean flag = true;
    
 
     private IFunSaleService funSaleService = new FunSaleServiceImpl();
 
     public void findAll(HttpServletRequest request,HttpServletResponse response ) throws IOException {
+
         Integer pageNum = Integer.parseInt(request.getParameter("pageNum"));
         Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        if (flag) {
+            
+            Integer totalCount = funSaleService.findTotalCount();
+            InsertToXml insertToXml1 = new InsertToXml();
+            insertToXml1.createXml(1,totalCount);
+            InsertToXml insertToXml = new InsertToXml();
+            boolean fg = insertToXml.createXml(1, totalCount);
+            if (fg) {
+                flag = false;
+            }
+
+        }
         if (pageNum == null || pageNum == 0) {
             pageNum = 1;
         }
@@ -39,9 +54,8 @@ public class FunSaleServlet extends BaseServlet {
     }
 
     public void findBySaleId(HttpServletRequest request,HttpServletResponse response ) throws IOException {
-        String saleId = request.getParameter("saleID");
+        String saleId = request.getParameter("saleId");
         Integer saleIdInteger = Integer.parseInt(saleId);
-        System.out.println(saleIdInteger);
         FunSale funSale = funSaleService.findById(saleIdInteger);
         writeValue(funSale, response);
     }
@@ -54,12 +68,10 @@ public class FunSaleServlet extends BaseServlet {
             while((str = br.readLine()) != null){
                 wholeStr += str;
             }
-            System.out.println(wholeStr);
 
             ObjectMapper mapper = new ObjectMapper();
             FunSale funSale = mapper.readValue(wholeStr, FunSale.class);
             funSale.setUpdateTime(new Timestamp(new Date().getTime()));
-            System.out.println(funSale);
             Boolean flag = funSaleService.updateByFunSale(funSale);
             if (flag) {
                 result = new Result(111, "修改成功");
@@ -82,12 +94,11 @@ public class FunSaleServlet extends BaseServlet {
         Result result = null;
         BufferedReader br = request.getReader();
 
-try {
+    try {
         String str, wholeStr = "";
         while((str = br.readLine()) != null){
             wholeStr += str;
         }
-    System.out.println(wholeStr);
     ObjectMapper mapper = new ObjectMapper();
     FunSale funSale = mapper.readValue(wholeStr, FunSale.class);
     funSale.setCreationTime(new Timestamp(new Date().getTime()));
@@ -96,7 +107,6 @@ try {
 //    funSale.setCreationTime();
 
 
-            System.out.println(funSale);
             Boolean flag = funSaleService.insert(funSale);
             if (flag) {
 
@@ -118,7 +128,7 @@ try {
     public void deleteById(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Result result = null;
         try {
-            String saleID = request.getParameter("saleID");
+            String saleID = request.getParameter("saleId");
             Integer saleId = Integer.parseInt(saleID);
             Boolean flag = funSaleService.deleteById(saleId);
             if (flag) {
@@ -136,30 +146,34 @@ try {
         }
     }
 
-    public void createXml(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Integer pageNum = Integer.parseInt(request.getParameter("pageNum"));
-        Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
-        if (pageNum == null || pageNum == 0) {
-            pageNum = 1;
-        }
-        if (pageSize == null || pageSize == 0) {
-            pageSize = 20;
-        }
+    public HttpServletResponse  createXml(HttpServletRequest request,HttpServletResponse response) throws IOException {
         try {
-            InsertToXml insertToXml = new InsertToXml();
-            boolean flag = insertToXml.createXml(pageNum,pageSize);
-            if (flag) {
-                Result result = new Result(1, "生成xml文件成功，请查看D://centre.xml文件。");
-                writeValue(result,response);
-            } else {
-                Result result = new Result(0, "对不起生成xml文件失败。");
-                writeValue(request,response);
-            }
-        } catch (Exception e) {
-            Result result = new Result(0, "对不起生成xml文件失败。");
-            writeValue(result,response);
-            e.printStackTrace();
+            // path是指欲下载的文件的路径。
+            File file = new File("F:\\IdeaProjects\\erp_sale2\\src\\main\\webapp\\funSaleAll.xml");
+            // 取得文件名。
+            String filename = file.getName();
+            // 取得文件的后缀名。
+            String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+
+            // 以流的形式下载文件。
+            InputStream fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            // 设置response的Header
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+            response.addHeader("Content-Length", "" + file.length());
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+        return response;
 
     }
 }

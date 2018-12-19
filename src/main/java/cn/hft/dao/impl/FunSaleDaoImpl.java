@@ -132,11 +132,10 @@ public class FunSaleDaoImpl implements IFunSaleDao {
         try {
             connection = JDBCUtils.getConnection();
             String sql = "insert into [FUN_SALE](SALE_ID,COMP_ID,CITY_ID,DEPT_ID,CREATION_TIME,SALE_NO,SALE_USEAGE,SALE_SUBJECT" +
-                    ",NUMERIC,SALE_SOURCE,SALE_EXPLRTH,BUILD_NAME,TRADE_ADDR,SALE_ROOM,SALE_INNERAREA,REGION_NAME,SECTION_NAME," +
-                    "UPDATE_TIME,SALE_TOTAL_PRICE,SALE_UNIT_PRICE,SALE_CONSIGN,SALE_MAP,PLATE_TYPE,SALE_STATUS,INFO_TYPE,SHARE_FLAG," +
+                    ",SALE_AREA,SALE_SOURCE,SALE_EXPLRTH,BUILD_NAME,TRADE_ADDR,SALE_ROOM,SALE_INNERAREA,REGION_NAME,SECTION_NAME," +
+                    "UPDATE_TIME,SALE_TOTAL_PRICE,SALE_UNIT_PRICE,SALE_CONSIGN,SALE_MAP,SALE_LEVEL,PLATE_TYPE,SALE_STATUS,INFO_TYPE,SHARE_FLAG," +
                     "RED_FLAG,FROM_PUBLIC,SALE_ID_OLD,HOUSE_BARGAIN,PANORAMA_MAP,YOUYOU_DEAL,IS_SALE_LEASE,HOUSE_SITUATION,OLD_TRUE_FLAG)" +
-                    " VALUES(NEXT VALUE  FOR SEQ_FUN_SALE__SALE_ID,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-            System.out.println(sql);
+                    " VALUES(NEXT VALUE  FOR SEQ_FUN_SALE_SALE_ID,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
             pst = connection.prepareStatement(sql);
             pst.setInt(1, funSale.getCompID());
             pst.setInt(2, funSale.getCityID());
@@ -145,7 +144,7 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setString(5, funSale.getSaleNo());
             pst.setInt(6, funSale.getSaleUseage());
             pst.setString(7, funSale.getSaleSubject());
-            pst.setBigDecimal(8, funSale.getNumeric());
+            pst.setBigDecimal(8, funSale.getSaleArea());
             pst.setInt(9, funSale.getSaleSource());
             pst.setInt(10, funSale.getSaleExplrth());
             pst.setString(11, funSale.getBuildName());
@@ -159,19 +158,20 @@ public class FunSaleDaoImpl implements IFunSaleDao {
             pst.setBigDecimal(19, funSale.getSaleUnitPrice());
             pst.setInt(20, funSale.getSaleConsign());
             pst.setInt(21, funSale.getSaleMap());
-            pst.setInt(22, funSale.getPlateType());
-            pst.setInt(23, funSale.getSaleStatus());
-            pst.setInt(24, funSale.getInfoType());
-            pst.setBoolean(25, funSale.getShareFlag());
-            pst.setBoolean(26, funSale.getRedFlag());
-            pst.setBoolean(27, funSale.getFromPublic());
-            pst.setInt(28, funSale.getSaleIdOld());
-            pst.setBoolean(29, funSale.getHouseBargain());
-            pst.setInt(30, funSale.getPanoramaMap());
-            pst.setInt(31, funSale.getYouyouDeal());
-            pst.setInt(32, funSale.getIsSaleLease());
-            pst.setInt(33, funSale.getHouseSituation());
-            pst.setInt(34, funSale.getOldTrueFlag());
+            pst.setInt(22, funSale.getSaleLevel());
+            pst.setInt(23, funSale.getPlateType());
+            pst.setInt(24, funSale.getSaleStatus());
+            pst.setInt(25, funSale.getInfoType());
+            pst.setBoolean(26, funSale.getShareFlag());
+            pst.setBoolean(27, funSale.getRedFlag());
+            pst.setBoolean(28, funSale.getFromPublic());
+            pst.setInt(29, funSale.getSaleIdOld());
+            pst.setBoolean(30, funSale.getHouseBargain());
+            pst.setInt(31, funSale.getPanoramaMap());
+            pst.setInt(32, funSale.getYouyouDeal());
+            pst.setInt(33, funSale.getIsSaleLease());
+            pst.setInt(34, funSale.getHouseSituation());
+            pst.setInt(35, funSale.getOldTrueFlag());
 
 
             int i = pst.executeUpdate();
@@ -230,9 +230,6 @@ public class FunSaleDaoImpl implements IFunSaleDao {
                 columnName.add(rsmd.getColumnLabel(i + 1));
             }
 
-            System.out.println("表字段为：");
-            System.out.println(columnName);
-            System.out.println("表数据为：");
             Map<String, Object> map = null;
             // 处理 ResultSet, 使用 while 循环
             while (resultSet.next()) {
@@ -240,11 +237,9 @@ public class FunSaleDaoImpl implements IFunSaleDao {
                 for (String column : columnName) {
                     Object value = resultSet.getObject(column);
                     map.put(column, value);
-                    System.out.print(value + "\t");
                 }
                 // 把一条记录的 Map 对象放入准备的 List 中
                 values.add(map);
-                System.out.println();
             }
         } catch (SQLException e) {
             System.out.println("异常提醒：" + e);
